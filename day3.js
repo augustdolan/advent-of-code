@@ -325,9 +325,10 @@ const forestMap = `........#....#..##..#...#.....#
 const treesIWillHit = (map, downSlope, rightSlope) => {
   let treesHit = 0;
   let mapArray = forestMap.split('\n');
+  let downwardPosition = 0;
+  let rightwardPosition = 0;
 
-  const travelRecursion = (downwardPosition = 0, rightwardPosition = 0) => {
-    if (mapArray[downwardPosition] !== undefined) {
+    while (mapArray[downwardPosition] !== undefined) {
       if (mapArray[downwardPosition][rightwardPosition] === '#') {
         treesHit++;
       }
@@ -337,10 +338,10 @@ const treesIWillHit = (map, downSlope, rightSlope) => {
         rightwardPosition -= mapArray[downwardPosition].length;
       }
       downwardPosition += downSlope;
-      travelRecursion(downwardPosition, rightwardPosition)
     }
-  }
-  travelRecursion();
+
+
+
   return treesHit;
 }
 
