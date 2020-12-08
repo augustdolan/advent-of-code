@@ -819,7 +819,9 @@ const findHighestSeatID = (allSeats) => {
   seatsArr = allSeats.split('\n');
 
   const consecutiveFsFound = [ false, false, false, false, false, false, false ]
-  // init highest current seat = Number.NEGATIVE_INFINITY
+  let seatIdArr = [];
+  let memoSeats = {};
+  let currentLowestSeat = Number.POSITIVE_INFINITY;
   let currentHighestSeat = Number.NEGATIVE_INFINITY;
   for (let i = 0; i < seatsArr.length; i++) {
     let minRow = 0;
@@ -835,34 +837,28 @@ const findHighestSeatID = (allSeats) => {
       } else if (currentLetter === 'L') {
         maxSeat = maxSeat - Math.ceil((maxSeat - minSeat) / 2);
       } else if (currentLetter === 'R') {
-        minSeat = maxSeat - Math.ceil((maxSeat - minSeat) / 2);
+        minSeat = minSeat + Math.ceil((maxSeat - minSeat) / 2);
       }
     }
-    let seatId = minRow * 8 + minSeat;
+
+    if (minRow !== maxRow) {
+      console.log('BIG BIG PROBLEM')
+    }
+    let seatId = (minRow * 8) + minSeat;
     if (seatId > currentHighestSeat) {
       currentHighestSeat = seatId;
     }
+    if (seatId < currentLowestSeat) {
+      currentLowestSeat = seatId;
+    }
+    memoSeats[seatId] = seatId;
   }
-  return currentHighestSeat;
-  // iterate over the seats arr
-    // init minRow at 0
-    // init maxRow at 127
-    // init minSeat at 0
-    // init maxSeat at 7
-    // iterate over seat designation
-      // if seat designation is 'F'
-        // Math.ceil(maxRow /= (maxRow - minRow) / 2);
-      // else if designation is 'B'
-        // minRow += (maxRow - minRow) / 2;
-      // else if desgination is 'L'
-        // minSeat = (maxSeat - minSeat) / 2;
-      // else if designation is 'R'
-        // maxSeat /= (maxSeat - minSeat) / 2;
-    // let seatId = minRow * 8 + minSeat
-    // if seatId > currentHighestSeat
-      // currentHighestSeat = seatId
 
-  // return currentHighestSeat
+  for (let i = currentLowestSeat; i <= currentHighestSeat; i++) {
+    if (memoSeats[i - 1] && !memoSeats[i] && memoSeats[i + 1]) {
+      return i
+    }
+  }
 }
 console.log(findHighestSeatID(seats));
 /*
