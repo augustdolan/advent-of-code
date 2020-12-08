@@ -2066,18 +2066,24 @@ const sumAnswerCounts = (allResponsesString) => {
 
   for (let i = 0; i < responsesArr.length; i++) {
     let answersSet = {};
-    let yesCount = 0;
-
+    let numOfGroupMembers = 1;
     for (let j = 0; j < responsesArr[i].length; j++) {
       let currentAnswer = responsesArr[i][j];
-      if (currentAnswer !== '\n') {
+      if (currentAnswer === '\n') {
+        numOfGroupMembers++;
+      } else {
         if (!answersSet[currentAnswer]) {
-          answersSet[currentAnswer] = currentAnswer;
-          yesCount++
+          answersSet[currentAnswer] = 0;
         }
+        answersSet[currentAnswer]++;
       }
     }
-    sumCount += yesCount;
+    // iterate over answersSet and look for responses = num in group
+    for (let answer in answersSet) {
+      if (answersSet[answer] === numOfGroupMembers) {
+        sumCount++;
+      }
+    }
   }
   return sumCount;
 }
@@ -2085,7 +2091,7 @@ const sumAnswerCounts = (allResponsesString) => {
 console.log(sumAnswerCounts(responses));
 
 /*
-O: a number sum of yes answers unique to each respective group
+O: a number sum of all answers in group that everyone answered yes to
 I: string of responses, with new lines meaning new individuals from group and double new line meaning new group
 C: a-z, existence means yes answer
 E: X
@@ -2093,7 +2099,7 @@ E: X
 double newline break for each group
 
 newline break for each person's response
-  on newlines we will do calculation and cleanup!
+  people in group = # of newlines + 1
 
 Gather a set/hash of yesses
 add to count as new things are added to set
